@@ -1,36 +1,46 @@
-var letter = require('letter'); // require letter object
+var Letter = require('./letter.js');
 
-var Word = function(wrd){
-// property to store the string wrd
-
-// a collection of letter objects
-
-// property is the word found?
-
-	this.getLets = function() {
-// populate the collection above with new Letter objects
+module.exports = function(word) {
+	this.word = word;
+	this.letterArray = [];
+	this.isGuessed = false;
+	// create letters from constructor function
+	this.getLetters = function() {
+		// for each letter in the word
+		for (var i = 0; i < this.word.length; i++) {
+			// use constructor function to create letter object
+			this.letterArray.push(new Letter(this.word[i]));
+		}
 	};
-	
-	//found the current word
-	this.didWeFindTheWord = function() {
-		//sets this.found in the word object to true or false if all letter objects have a true value in their appear property
-		});
-
-		return this.found;
+	// determine if word is guessed and return true or false
+	this.returnIsGuessed = function() {
+		this.isGuessed = true; // flag word is guessed and change later if it is not guessed
+		for (var i = 0; i < this.letterArray.length; i++) {
+			if (!this.letterArray[i].isDisplayed) { // uses the letter display attribute to determine is the word is guessed
+				this.isGuessed = false; // flag word as not guessed
+				i = this.letterArray.length; // exit for loop
+			}
+		}
 	};
-
-	this.checkIfLetterFound = function(guessLetter) {
-
-// iterate through the collection of letter Objects
-
-// if guessLetter matches Letter property, the letter object should be shown
-		return whatToReturn;
+	// check if a letter has been guessed or not
+	this.letterStatus = function(guess) {
+		// flag for correct guess
+		var correctGuess = false;
+		// for each letter in the current word
+		for (var i = 0; i < this.letterArray.length; i++) {
+			if (this.letterArray[i].letter == guess) { // if guess equals the letter
+				this.letterArray[i].isDisplayed = true; // flag letter display as true
+				correctGuess = true; // flag guess as correct
+			}
+		}
+		return correctGuess;
 	};
-
-	this.wordRender = function() {
-// render the word based on if letters are found or ot found
-		return str;
+	// renders the word based on the correct guesses
+	this.render = function() {
+		var string = ''; // empty string
+		for (var i = 0; i < this.letterArray.length; i++) { // for each leeter in the word
+			string += this.letterArray[i].render(); // add each rendering of a letter to the string
+		}
+		return string;
 	};
 }
-
-// export to use in main.js

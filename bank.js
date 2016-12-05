@@ -1,4 +1,5 @@
-exports.array = [ // create a word list to use in main.js
+// create a word bank
+module.exports = [
   'ACTUALLY',
   'ADDITION',
   'ALTHOUGH',
@@ -20,4 +21,3 @@ exports.array = [ // create a word list to use in main.js
   'HAPPENED',
   'INCREASE'
 ];
-

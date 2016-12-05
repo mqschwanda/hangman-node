@@ -1,75 +1,67 @@
+var prompt = require('prompt');
+var Word = require('./word.js');
+var Bank = require('./bank.js');
 
-var wordBank = require('wordbank'); // load the local wordbank
+prompt.start();
 
-var inquirer = require('inquirer'); // Load the NPM Package inquirer
-
-inquirer.prompt([ // prompt to get guess
-
-{
-	type: "input",
-	name: "guess",
-	message: "GUESS A LETTER: "
-}
-]);
-
-//require the objects/exports you will use
-
-// prompt.start();
-
-game = {
-	wordBank : wordBank.array, // import an array of words
-	wordsWon : game.wordBank.length, // count of words Found
-	guessesRemaining : 10, //per word
-	currentWord : null, //the word object
-	startGame : function (word){
-		if (guessesRemaining>0) { //make sure the user has 10 guesses
-
-		}
-
-		//get a random word from the array
-
-		//populate currentWrd (made from Word constructor function) object with letters
-
-		this.keepPromptingUser();
-
-	}, 
-	resetGuessesRemaining : function(){
-    // reset guess count for new game	
+var game = {
+	wordBank : Bank,
+	guessArray : [],
+	guessesRemaining : 5,
+	currentWord : null,
+	// function to begin the game
+	startGame : function (word) {
+		// generate current word from word bank
+		var i = Math.floor(Math.random() * this.wordBank.length);
+		this.currentWord = new Word(this.wordBank[i]);
+		// get the letters for the current word
+		this.currentWord.getLetters();
+		// prompt user for letter guess
+		this.promptUser();
 	},
-	keepPromptingUser : function(){
-		var self = this;
-
-		prompt.get(['guessLetter'], function(err, result) {
-		    // result is an object like this: { guessLetter: 'f' }
-		    //console.log(result);
-		    
-			  // console log the letetr you chose
-
-		    //this checks if the letter was found and if it is then it sets that specific letter in the word to be found
-
-		    //if the user guessed incorrectly minus the number of guesses they have left
-				// and console.log if they were incorrect or correct
-		    	
+	promptUser : function() {
+		// create nested 'this' by declaring it as 'that'
+		var that = this;
+		prompt.get(['guess'], function(err, result) {
+			// transform to uppercase
+			var guess = result.guess.toUpperCase();
+			// add guess to array of guessed words
+			that.guessArray.push(guess);
+			// sort alphabetically for human readability
+			that.guessArray.sort();
+			// log guess to user
+	    console.log('Your guess was "' + guess + '"');
+			// changes display status for letter and return 'true' if guess is correct
+	    var correctGuess = that.currentWord.letterStatus(guess);
+			// logic to display if guess was correct to the user
+	    if (correctGuess) {
+				console.log('Correct Guess!');
 				//check if you win only when you are right
-        //end game
-			 
-		    
-		    // display the user how many guesses remaining
-			
-				// render the word 
-				
-				// display letters the user has guessed
-
-			  // if user has remaining guesses and Word isn't found
-			
-				// if user has no guesses left, show them the word and tell them they lost
-			
-				// else show the user word and rendered
-		    
+				if (that.currentWord.returnIsGuessed()) {
+					console.log('You Won!!!');
+					return; //end game
+				}
+	    } else {
+				console.log('Wrong guess!');
+	    	that.guessesRemaining--; // decrement correct guess count
+	    }
+			// Return game information to user after guess
+	    console.log('Guesses remaining: ' + that.guessesRemaining);
+			console.log('Guessed Letters: ' + JSON.stringify(that.guessArray));
+	    console.log(that.currentWord.render());
+			// Logic to determine game status
+	    if ((that.guessesRemaining > 0) && (that.currentWord.isGuessed == false)) {  // Play condition
+				console.log('');
+				that.promptUser();
+	    }
+	    else if (that.guessesRemaining == 0) {  // Loss condition
+	    	console.log('GAME OVER! The word was "' + that.currentWord.word + '"');
+	    } else {  // Win condition
+				console.log('YOU WIN! The word was "' + that.currentWord.word + '"');
+				return;
+	    }
 		});
 	}
-
-
 };
 
 game.startGame();

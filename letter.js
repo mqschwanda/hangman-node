@@ -1,15 +1,15 @@
-// export to use in word.js
-exports.Letter = function(character) { // constructor function that takes a creates a character object
-  this.letter = character; // property to store the actual letter
-  this.show = false; // property/boolean if the letter can be shown
-	this.letterRender = function() { // sets the output value
-    if (this.show) { //if appear is true then show character
-      this.output = this.letter;
-    } else { //else appear is false then show the -
-      this.output = "-";
-    }
+module.exports = function(letter) {
+	this.letter = letter;
+	this.isDisplayed = false;
+	// renders the letter bassed on if it was guessed or not by the user
+	this.render = function() {
+		// default render
+		var renderedChracter = " _ ";
+		// if letter has been guessed
+		if (this.isDisplayed) {
+			// change rendering to the correct letter
+			renderedChracter = this.letter;
+		}
+		return renderedChracter;
 	};
 };
-
-
-
